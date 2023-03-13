@@ -19,7 +19,7 @@
 /env/user/*
 /env/docker/*
 !/env/docker/bin/.gitkeep
-!/env/docker/data/.gitkeep
+!/env/docker/data/.gitkeepgi
 !/env/docker/etc/
 /env/docker/etc/*
 !/env/docker/etc/*.conf.dockerdist
