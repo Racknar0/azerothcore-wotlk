@@ -161,7 +161,65 @@ Anticheat.AnnounceKick = 0
 Anticheat.AnnounceBan = 0
 Anticheat.AnnounceJail = 0
 
+#
+###################################################################################################
+
+###################################################################################################
+#   ANTICHEAT COUNTER MEASURE
+#
 #     Anticheat Counter Measures
+#
+#     Anticheat.CM.TIMEMANIPULATION
+#
+#       Description: Counters Time Manipulation hacks. These hacks can cause server to crash.
+#
+#       Default:    1 - (Enabled)
+#                   0 - (Disabled)
+#
+
+Anticheat.CM.TIMEMANIPULATION = 1
+
+#
+#     Anticheat.CM.Teleport
+#
+#       Description: Sends player back to last gps position if player cheats and teleports.
+#
+#       Default:    0 - (Disabled)
+#                   1 - (Enabled)
+#
+
+Anticheat.CM.Teleport = 0
+
+#
+#     Anticheat.CM.WriteLog
+#
+#       Description: Enables Logging
+#       Default:    0 - (Disabled)
+#                   1 - (Enabled)
+#
+
+Anticheat.CM.WriteLog = 0
+
+#
+#     Anticheat.CM.ALERTSCREEN
+#
+#       Description: Alerts online GMs of Counter Measure being deployed via screen alert
+#       Default:    0 - (Disabled)
+#                   1 - (Enabled)
+#
+
+Anticheat.CM.ALERTSCREEN = 0
+
+#
+#     Anticheat.CM.ALERTCHAT
+#
+#       Description: Alerts online GMs of Counter Measure being deployed via chat alert
+#       Default:    0 - (Disabled)
+#                   1 - (Enabled)
+#
+
+Anticheat.CM.ALERTCHAT= 0
+
 #
 #     Anticheat.BG.StartAreaTeleport
 #
@@ -172,3 +230,6 @@ Anticheat.AnnounceJail = 0
 #
 
 Anticheat.BG.StartAreaTeleport = 0
+
+#
+###################################################################################################
