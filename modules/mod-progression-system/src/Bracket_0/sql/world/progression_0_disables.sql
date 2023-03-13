@@ -1,4 +1,4 @@
--- 1-19 level range
+-- 1-20 level range
 DELETE FROM `disables` WHERE `entry` IN (33, 36, 43, 48, 389);
 INSERT INTO `disables` (`sourceType`, `entry`, `flags`, `params_0`, `params_1`, `comment`) VALUES 
 (2, 33, 1, "", "", "Shadowfang Keep"),
