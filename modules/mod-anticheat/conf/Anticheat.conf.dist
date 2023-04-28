@@ -202,6 +202,50 @@ Anticheat.CM.Teleport = 0
 Anticheat.CM.FLYHACK = 0
 
 #
+#     Anticheat.CM.JUMPHACK
+#     Anticheat.CM.ADVJUMPHACK
+#       Description: Sets player back to the ground if jump hack is detected
+#
+#       Default:    0 - (Disabled)
+#                   1 - (Enabled)
+#
+
+Anticheat.CM.JUMPHACK = 0
+Anticheat.CM.ADVJUMPHACK = 0
+
+#
+#     Anticheat.CM.IGNOREZ
+#
+#       Description: Sets player back to the ground if ignore-z hack is detected
+#
+#       Default:    0 - (Disabled)
+#                   1 - (Enabled)
+#
+
+Anticheat.CM.IGNOREZ = 0
+
+#
+#     Anticheat.CM.SPEEDHACK
+#
+#       Description: Sets player back to allowed server rate speed when speed hack is detected
+#       Default:    0 - (Disabled)
+#                   1 - (Enabled)
+#
+
+Anticheat.CM.SPEEDHACK = 0
+
+#
+#     Anticheat.BG.StartAreaTeleport
+#
+#       Description: Sends player back to start position if player cheats and teleports out of start spot
+#                    before the BG begins.
+#       Default:    0 - (Disabled)
+#                   1 - (Enabled)
+#
+
+Anticheat.BG.StartAreaTeleport = 0
+
+#
 #     Anticheat.CM.WriteLog
 #
 #       Description: Enables Logging
@@ -230,17 +274,6 @@ Anticheat.CM.ALERTSCREEN = 0
 #
 
 Anticheat.CM.ALERTCHAT= 0
-
-#
-#     Anticheat.BG.StartAreaTeleport
-#
-#       Description: Sends player back to start position if player cheats and teleports out of start spot
-#                    before the BG begins.
-#       Default:    0 - (Disabled)
-#                   1 - (Enabled)
-#
-
-Anticheat.BG.StartAreaTeleport = 0
 
 #
 ###################################################################################################
