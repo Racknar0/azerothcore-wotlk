@@ -517,9 +517,10 @@ bool Player::Create(ObjectGuid::LowType guidlow, CharacterCreateInfo* createInfo
         return false;
     }
 
-    uint32 RaceClassGender = (createInfo->Race) | (createInfo->Class << 8) | (createInfo->Gender << 16);
-
-    SetUInt32Value(UNIT_FIELD_BYTES_0, (RaceClassGender | (powertype << 24)));
+    setRace(createInfo->Race);
+    setClass(createInfo->Class);
+    setGender(Gender(createInfo->Gender));
+    setPowerType(Powers(powertype), false);
     InitDisplayIds();
     if (sWorld->getIntConfig(CONFIG_GAME_TYPE) == REALM_TYPE_PVP || sWorld->getIntConfig(CONFIG_GAME_TYPE) == REALM_TYPE_RPPVP)
     {
@@ -724,7 +725,7 @@ bool Player::StoreNewItemInBestSlots(uint32 titem_id, uint32 titem_amount)
     }
 
     // item can't be added
-    LOG_ERROR("entities.player", "STORAGE: Can't equip or store initial item {} for race {} class {}, error msg = {}", titem_id, getRace(true), getClass(), msg);
+    LOG_ERROR("entities.player", "STORAGE: Can't equip or store initial item {} for race {} class {}, error msg = {}", titem_id, getRace(), getClass(), msg);
     return false;
 }
 
@@ -824,7 +825,7 @@ int32 Player::getMaxTimer(MirrorTimerType timer)
             {
                 if (!IsAlive())
                     return DISABLED_MIRROR_TIMER;
-                return 1 * IN_MILLISECONDS;
+                return 2020;
             }
         default:
             return 0;
@@ -920,7 +921,7 @@ void Player::HandleDrowning(uint32 time_diff)
             m_MirrorTimer[FIRE_TIMER] -= time_diff;
             if (m_MirrorTimer[FIRE_TIMER] < 0)
             {
-                m_MirrorTimer[FIRE_TIMER] += 1 * IN_MILLISECONDS;
+                m_MirrorTimer[FIRE_TIMER] += 2020;
                 // Calculate and deal damage
                 /// @todo: Check this formula
                 uint32 damage = urand(600, 700);
@@ -1462,7 +1463,10 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
     else
     {
         if (getClass() == CLASS_DEATH_KNIGHT && GetMapId() == 609 && !IsGameMaster() && !HasSpell(50977))
+        {
+            SendTransferAborted(mapid, TRANSFER_ABORT_UNIQUE_MESSAGE, 1);
             return false;
+        }
 
         // far teleport to another map
         Map* oldmap = IsInWorld() ? GetMap() : nullptr;
@@ -1982,19 +1986,26 @@ void Player::RegenerateHealth()
     else if (!IsInCombat() || HasAuraType(SPELL_AURA_MOD_REGEN_DURING_COMBAT))
     {
         addvalue = OCTRegenHPPerSpirit() * HealthIncreaseRate;
+
+        if (!IsStandState())
+        {
+            addvalue *= 1.33f;
+        }
+
+        AuraEffectList const& mModHealthRegenPct = GetAuraEffectsByType(SPELL_AURA_MOD_HEALTH_REGEN_PERCENT);
+        for (AuraEffectList::const_iterator i = mModHealthRegenPct.begin(); i != mModHealthRegenPct.end(); ++i)
+        {
+            AddPct(addvalue, (*i)->GetAmount());
+        }
+
         if (!IsInCombat())
         {
-            AuraEffectList const& mModHealthRegenPct = GetAuraEffectsByType(SPELL_AURA_MOD_HEALTH_REGEN_PERCENT);
-            for (AuraEffectList::const_iterator i = mModHealthRegenPct.begin(); i != mModHealthRegenPct.end(); ++i)
-                AddPct(addvalue, (*i)->GetAmount());
-
             addvalue += GetTotalAuraModifier(SPELL_AURA_MOD_REGEN) * 2 * IN_MILLISECONDS / (5 * IN_MILLISECONDS);
         }
         else if (HasAuraType(SPELL_AURA_MOD_REGEN_DURING_COMBAT))
+        {
             ApplyPct(addvalue, GetTotalAuraModifier(SPELL_AURA_MOD_REGEN_DURING_COMBAT));
-
-        if (!IsStandState())
-            addvalue *= 1.5f;
+        }
     }
 
     // always regeneration bonus (including combat)
@@ -2214,7 +2225,7 @@ void Player::SetGameMaster(bool on)
         SetPhaseMask(newPhase, false);
 
         m_ExtraFlags &= ~ PLAYER_EXTRA_GM_ON;
-        SetFactionForRace(getRace(true));
+        SetFactionForRace(getRace());
         RemovePlayerFlag(PLAYER_FLAGS_GM);
         RemoveUnitFlag2(UNIT_FLAG2_ALLOW_CHEAT_SPELLS);
 
@@ -2425,7 +2436,7 @@ void Player::GiveLevel(uint8 level)
         guild->UpdateMemberData(this, GUILD_MEMBER_DATA_LEVEL, level);
 
     PlayerLevelInfo info;
-    sObjectMgr->GetPlayerLevelInfo(getRace(true), getClass(), level, &info);
+    sObjectMgr->GetPlayerLevelInfo(getRace(), getClass(), level, &info);
 
     PlayerClassLevelInfo classInfo;
     sObjectMgr->GetPlayerClassLevelInfo(getClass(), level, &classInfo);
@@ -2541,7 +2552,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     sObjectMgr->GetPlayerClassLevelInfo(getClass(), GetLevel(), &classInfo);
 
     PlayerLevelInfo info;
-    sObjectMgr->GetPlayerLevelInfo(getRace(true), getClass(), GetLevel(), &info);
+    sObjectMgr->GetPlayerLevelInfo(getRace(), getClass(), GetLevel(), &info);
 
     uint32 maxPlayerLevel = sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL);
     sScriptMgr->OnSetMaxLevel(this, maxPlayerLevel);
@@ -4328,7 +4339,7 @@ void Player::BuildPlayerRepop()
     WorldPacket data(SMSG_PRE_RESURRECT, GetPackGUID().size());
     data << GetPackGUID();
     GetSession()->SendPacket(&data);
-    if (getRace(true) == RACE_NIGHTELF)
+    if (getRace() == RACE_NIGHTELF)
     {
         CastSpell(this, 20584, true);
     }
@@ -5732,19 +5743,19 @@ TeamId Player::TeamIdForRace(uint8 race)
 {
     if (ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(race))
     {
-        switch (rEntry->TeamID)
+        switch (rEntry->BaseLanguage)
         {
             case 1:
-                return TEAM_HORDE;
+                return HORDE_FACTION;
             case 7:
-                return TEAM_ALLIANCE;
+                return ALLIANCE_FACTION;
         }
-        LOG_ERROR("entities.player", "Race ({}) has wrong teamid ({}) in DBC: wrong DBC files?", uint32(race), rEntry->TeamID);
+        LOG_ERROR("entities.player", "Race ({}) has wrong teamid ({}) in DBC: wrong DBC files?", uint32(race), rEntry->BaseLanguage);
     }
     else
         LOG_ERROR("entities.player", "Race ({}) not found in DBC: wrong DBC files?", uint32(race));
 
-    return TEAM_ALLIANCE;
+    return ALLIANCE_FACTION;
 }
 
 void Player::SetFactionForRace(uint8 race)
@@ -5753,7 +5764,7 @@ void Player::SetFactionForRace(uint8 race)
 
     sScriptMgr->OnPlayerUpdateFaction(this);
 
-    if (GetTeamId(true) != GetTeamId())
+    if (GetTeamId() != GetTeamId())
         return;
 
     ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(race);
@@ -5871,7 +5882,7 @@ void Player::RewardReputation(Unit* victim, float rate)
                     ChampioningFaction = GetChampioningFaction();
     }
 
-    TeamId teamId = GetTeamId(true); // Always check player original reputation when rewarding
+    TeamId teamId = GetTeamId(); // Always check player original reputation when rewarding
 
     if (Rep->RepFaction1 && (!Rep->TeamDependent || teamId == TEAM_ALLIANCE))
     {
@@ -6055,7 +6066,7 @@ bool Player::RewardHonor(Unit* uVictim, uint32 groupsize, int32 honor, bool awar
             ApplyModUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, 1, true);
             UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL);
             UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HK_CLASS, victim->getClass());
-            UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HK_RACE, victim->getRace(true));
+            UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HK_RACE, victim->getRace());
             UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA, GetAreaId());
             UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL, 1, 0, victim);
             UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_SPECIAL_PVP_KILL, 1, 0, victim);
@@ -6822,8 +6833,10 @@ void Player::_ApplyWeaponDamage(uint8 slot, ItemTemplate const* proto, ScalingSt
             if (extraDPS)
             {
                 float average = extraDPS * proto->Delay / 1000.0f;
-                minDamage = 0.7f * average;
-                maxDamage = 1.3f * average;
+                float mod = ssv->IsTwoHand(proto->ScalingStatValue) ? 0.2f : 0.3f;
+
+                minDamage = (1.0f - mod) * average;
+                maxDamage = (1.0f + mod) * average;
             }
         }
 
@@ -7216,6 +7229,15 @@ void Player::CastItemCombatSpell(Unit* target, WeaponAttackType attType, uint32 
                 LOG_ERROR("entities.player", "Player::CastItemCombatSpell({}, name: {}, enchant: {}): unknown spell {} is casted, ignoring...",
                                GetGUID().ToString(), GetName(), pEnchant->ID, pEnchant->spellid[s]);
                 continue;
+            }
+
+            if (entry && (entry->attributeMask & ENCHANT_PROC_ATTR_EXCLUSIVE) != 0)
+            {
+                Unit* checkTarget = spellInfo->IsPositive() ? this : target;
+                if (checkTarget->HasAura(spellInfo->Id, GetGUID()))
+                {
+                    continue;
+                }
             }
 
             float chance = pEnchant->amount[s] != 0 ? float(pEnchant->amount[s]) : GetWeaponProcChance();
@@ -9183,32 +9205,47 @@ Pet* Player::CreatePet(uint32 creatureEntry, uint32 spellID /*= 0*/)
     return pet;
 }
 
-void Player::StopCastingCharm()
+void Player::StopCastingCharm(Aura* except /*= nullptr*/)
 {
     Unit* charm = GetCharm();
     if (!charm)
+    {
         return;
+    }
 
     if (charm->GetTypeId() == TYPEID_UNIT)
     {
         if (charm->ToCreature()->HasUnitTypeMask(UNIT_MASK_PUPPET))
+        {
             ((Puppet*)charm)->UnSummon();
+        }
         else if (charm->IsVehicle())
+        {
             ExitVehicle();
+        }
     }
+
     if (GetCharmGUID())
-        charm->RemoveCharmAuras();
+    {
+        charm->RemoveAurasByType(SPELL_AURA_MOD_CHARM, ObjectGuid::Empty, except);
+        charm->RemoveAurasByType(SPELL_AURA_MOD_POSSESS_PET, ObjectGuid::Empty, except);
+        charm->RemoveAurasByType(SPELL_AURA_MOD_POSSESS, ObjectGuid::Empty, except);
+        charm->RemoveAurasByType(SPELL_AURA_AOE_CHARM, ObjectGuid::Empty, except);
+    }
 
     if (GetCharmGUID())
     {
         LOG_FATAL("entities.player", "Player {} ({} is not able to uncharm unit ({})", GetName(), GetGUID().ToString(), GetCharmGUID().ToString());
+
         if (charm->GetCharmerGUID())
         {
             LOG_FATAL("entities.player", "Charmed unit has charmer {}", charm->GetCharmerGUID().ToString());
             ABORT();
         }
         else
+        {
             SetCharm(charm, false);
+        }
     }
 }
 
@@ -10234,7 +10271,7 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
     // only one mount ID for both sides. Probably not good to use 315 in case DBC nodes
     // change but I couldn't find a suitable alternative. OK to use class because only DK
     // can use this taxi.
-    uint32 mount_display_id = sObjectMgr->GetTaxiMountDisplayId(sourcenode, GetTeamId(true), npc == nullptr || (sourcenode == 315 && getClass() == CLASS_DEATH_KNIGHT));
+    uint32 mount_display_id = sObjectMgr->GetTaxiMountDisplayId(sourcenode, GetTeamId(), npc == nullptr || (sourcenode == 315 && getClass() == CLASS_DEATH_KNIGHT));
 
     // in spell case allow 0 model
     if ((mount_display_id == 0 && spellid == 0) || sourcepath == 0)
@@ -10329,7 +10366,7 @@ void Player::ContinueTaxiFlight()
 
     LOG_DEBUG("entities.unit", "WORLD: Restart character {} taxi flight", GetGUID().ToString());
 
-    uint32 mountDisplayId = sObjectMgr->GetTaxiMountDisplayId(sourceNode, GetTeamId(true), true);
+    uint32 mountDisplayId = sObjectMgr->GetTaxiMountDisplayId(sourceNode, GetTeamId(), true);
     if (!mountDisplayId)
         return;
 
@@ -10498,7 +10535,7 @@ void Player::InitDataForForm(bool reapplyMods)
 
 void Player::InitDisplayIds()
 {
-    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(getRace(true), getClass());
+    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(getRace(), getClass());
     if (!info)
     {
         LOG_ERROR("entities.player", "Player {} has incorrect race/class pair. Can't init display ids.", GetGUID().ToString());
@@ -10619,7 +10656,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
         return false;
     }
 
-    if (!IsGameMaster() && ((pProto->Flags2 & ITEM_FLAGS_EXTRA_HORDE_ONLY && GetTeamId(true) == TEAM_ALLIANCE) || (pProto->Flags2 & ITEM_FLAGS_EXTRA_ALLIANCE_ONLY && GetTeamId(true) == TEAM_HORDE)))
+    if (!IsGameMaster() && ((pProto->Flags2 & ITEM_FLAGS_EXTRA_HORDE_ONLY && GetTeamId() == TEAM_ALLIANCE) || (pProto->Flags2 & ITEM_FLAGS_EXTRA_ALLIANCE_ONLY && GetTeamId() == TEAM_HORDE)))
     {
         return false;
     }
@@ -11281,7 +11318,7 @@ void Player::ReportedAfkBy(Player* reporter)
 
 WorldLocation Player::GetStartPosition() const
 {
-    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(getRace(true), getClass());
+    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(getRace(), getClass());
     uint32 mapId = info->mapId;
     if (getClass() == CLASS_DEATH_KNIGHT && HasSpell(50977))
         return WorldLocation(0, 2352.0f, -5709.0f, 154.5f, 0.0f);
@@ -11562,7 +11599,6 @@ void Player::SendInitialPacketsAfterAddToMap()
         SendMessageToSet(&data2, true);
     }
 
-    GetAurasForTarget(this);
     SendEnchantmentDurations();                             // must be after add to map
     SendItemDurations();                                    // must be after add to map
     SendQuestGiverStatusMultiple();
@@ -11943,9 +11979,9 @@ void Player::learnSkillRewardedSpells(uint32 skill_id, uint32 skill_value)
     }
 }
 
-void Player::GetAurasForTarget(Unit* target) // pussywizard: contact before changing ANYTHING!
+void Player::GetAurasForTarget(Unit* target, bool force /*= false*/)
 {
-    if (!target/* || target->GetVisibleAuras()->empty()*/)                  // speedup things
+    if (!target || (!force && target->GetVisibleAuras()->empty()))    // speedup things
         return;
 
     /*! Blizz sends certain movement packets sometimes even before CreateObject
@@ -12551,15 +12587,18 @@ bool Player::isHonorOrXPTarget(Unit* victim) const
 
     // Victim level less gray level
     if (v_level <= k_grey)
+    {
         return false;
+    }
 
     if (victim->GetTypeId() == TYPEID_UNIT)
     {
-        if (victim->IsTotem() ||
-                victim->IsPet() ||
-                victim->ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_NO_XP)
+        if (victim->IsTotem() || victim->IsCritter() || victim->IsPet() || (victim->ToCreature()->GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_NO_XP))
+        {
             return false;
+        }
     }
+
     return true;
 }
 
@@ -13031,15 +13070,15 @@ bool ItemPosCount::isContainedIn(ItemPosCountVec const& vec) const
     return false;
 }
 
-void Player::StopCastingBindSight()
+void Player::StopCastingBindSight(Aura* except /*= nullptr*/)
 {
     if (WorldObject* target = GetViewpoint())
     {
         if (target->isType(TYPEMASK_UNIT))
         {
-            ((Unit*)target)->RemoveAurasByType(SPELL_AURA_BIND_SIGHT, GetGUID());
-            ((Unit*)target)->RemoveAurasByType(SPELL_AURA_MOD_POSSESS, GetGUID());
-            ((Unit*)target)->RemoveAurasByType(SPELL_AURA_MOD_POSSESS_PET, GetGUID());
+            ((Unit*)target)->RemoveAurasByType(SPELL_AURA_BIND_SIGHT, GetGUID(), except);
+            ((Unit*)target)->RemoveAurasByType(SPELL_AURA_MOD_POSSESS, GetGUID(), except);
+            ((Unit*)target)->RemoveAurasByType(SPELL_AURA_MOD_POSSESS_PET, GetGUID(), except);
         }
     }
 }
@@ -14561,7 +14600,7 @@ void Player::_SaveCharacter(bool create, CharacterDatabaseTransaction trans)
         stmt->SetData(index++, GetGUID().GetCounter());
         stmt->SetData(index++, GetSession()->GetAccountId());
         stmt->SetData(index++, GetName());
-        stmt->SetData(index++, getRace(true));
+        stmt->SetData(index++, getRace());
         stmt->SetData(index++, getClass());
         stmt->SetData(index++, GetByteValue(PLAYER_BYTES_3, 0));   // save gender from PLAYER_BYTES_3, UNIT_BYTES_0 changes with every transform effect
         stmt->SetData(index++, GetLevel());
@@ -14672,13 +14711,14 @@ void Player::_SaveCharacter(bool create, CharacterDatabaseTransaction trans)
         stmt->SetData(index++, GetByteValue(PLAYER_FIELD_BYTES, 2));
         stmt->SetData(index++, m_grantableLevels);
         stmt->SetData(index++, _innTriggerId);
+        stmt->SetData(index++, m_extraBonusTalentCount);
     }
     else
     {
         // Update query
         stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHARACTER);
         stmt->SetData(index++, GetName());
-        stmt->SetData(index++, getRace(true));
+        stmt->SetData(index++, getRace());
         stmt->SetData(index++, getClass());
         stmt->SetData(index++, GetByteValue(PLAYER_BYTES_3, 0));   // save gender from PLAYER_BYTES_3, UNIT_BYTES_0 changes with every transform effect
         stmt->SetData(index++, GetLevel());
@@ -14811,6 +14851,7 @@ void Player::_SaveCharacter(bool create, CharacterDatabaseTransaction trans)
         stmt->SetData(index++, GetByteValue(PLAYER_FIELD_BYTES, 2));
         stmt->SetData(index++, m_grantableLevels);
         stmt->SetData(index++, _innTriggerId);
+        stmt->SetData(index++, m_extraBonusTalentCount);
 
         stmt->SetData(index++, IsInWorld() && !GetSession()->PlayerLogout() ? 1 : 0);
         // Index
@@ -15127,7 +15168,7 @@ void Player::ActivateSpec(uint8 spec)
     for (AuraList::iterator iter = scAuras.begin(); iter != scAuras.end();)
     {
         Aura* aura = *iter;
-        if (!HasActiveSpell(aura->GetId()) && !HasTalent(aura->GetId(), GetActiveSpec()))
+        if (!HasActiveSpell(aura->GetId()) && !HasTalent(aura->GetId(), GetActiveSpec()) && !aura->GetCastItemGUID())
         {
             aura->Remove();
             iter = scAuras.begin();

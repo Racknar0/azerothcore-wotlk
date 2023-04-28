@@ -538,16 +538,6 @@ void WorldSession::HandleSetSelectionOpcode(WorldPacket& recv_data)
     ObjectGuid guid;
     recv_data >> guid;
 
-    if (!guid)
-    {
-        // Clear any active gossip related to current selection if not present at player's client
-        GossipMenu& gossipMenu = _player->PlayerTalkClass->GetGossipMenu();
-        if (gossipMenu.GetSenderGUID() == _player->GetTarget())
-        {
-            _player->PlayerTalkClass->SendCloseGossip();
-        }
-    }
-
     _player->SetSelection(guid);
 
     // Change target of current autoshoot spell
@@ -751,7 +741,7 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket& recv_data)
         return;
     }
 
-    uint32 teamFaction = player->GetTeamId(true) == TEAM_ALLIANCE ? FACTION_MASK_ALLIANCE : FACTION_MASK_HORDE;
+    uint32 teamFaction = player->GetTeamId() == TEAM_ALLIANCE ? FACTION_MASK_ALLIANCE : FACTION_MASK_HORDE;
     bool isTavernAreatrigger = sObjectMgr->IsTavernAreaTrigger(triggerId, teamFaction);
     if (!player->IsInAreaTriggerRadius(atEntry, isTavernAreatrigger ? 5.f : 0.f))
     {

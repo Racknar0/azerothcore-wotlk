@@ -1801,7 +1801,7 @@ public:
     {
         Unit::SetPvP(state);
         if (!m_Controlled.empty())
-            for (auto itr : m_Controlled)
+            for (auto& itr : m_Controlled)
                 itr->SetPvP(state);
     }
     void UpdatePvP(bool state, bool _override = false);
@@ -2056,9 +2056,9 @@ public:
     void CheckAreaExploreAndOutdoor();
 
     static TeamId TeamIdForRace(uint8 race);
-    [[nodiscard]] TeamId GetTeamId(bool original = false) const { return original ? TeamIdForRace(getRace(true)) : m_team; };
+    [[nodiscard]] uint32 GetTeam() const { return m_team; }
+    [[nodiscard]] TeamId GetTeamId() const { return m_team == ALLIANCE ? TEAM_ALLIANCE : TEAM_HORDE; }
     void SetFactionForRace(uint8 race);
-    void setTeamId(TeamId teamid) { m_team = teamid; };
 
     void InitDisplayIds();
 
@@ -2183,7 +2183,7 @@ public:
     void SendBGWeekendWorldStates();
     void SendBattlefieldWorldStates();
 
-    void GetAurasForTarget(Unit* target);
+    void GetAurasForTarget(Unit* target, bool force = false);
 
     PlayerMenu* PlayerTalkClass;
     std::vector<ItemSetEffect*> ItemSetEff;
@@ -2298,8 +2298,8 @@ public:
     void SetSeer(WorldObject* target) { m_seer = target; }
     void SetViewpoint(WorldObject* target, bool apply);
     [[nodiscard]] WorldObject* GetViewpoint() const;
-    void StopCastingCharm();
-    void StopCastingBindSight();
+    void StopCastingCharm(Aura* except = nullptr);
+    void StopCastingBindSight(Aura* except = nullptr);
 
     [[nodiscard]] uint32 GetSaveTimer() const { return m_nextSave; }
     void SetSaveTimer(uint32 timer) { m_nextSave = timer; }
@@ -2709,7 +2709,7 @@ public:
     void outDebugValues() const;
     ObjectGuid m_lootGuid;
 
-    TeamId m_team;
+    uint32 m_team;
     uint32 m_nextSave; // pussywizard
     uint16 m_additionalSaveTimer; // pussywizard
     uint8 m_additionalSaveMask; // pussywizard
