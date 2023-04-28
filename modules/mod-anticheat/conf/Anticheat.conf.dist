@@ -191,6 +191,17 @@ Anticheat.CM.TIMEMANIPULATION = 1
 Anticheat.CM.Teleport = 0
 
 #
+#     Anticheat.CM.FLYHACK
+#
+#       Description: Sets player back to the ground if fly hack is detected
+#
+#       Default:    0 - (Disabled)
+#                   1 - (Enabled)
+#
+
+Anticheat.CM.FLYHACK = 0
+
+#
 #     Anticheat.CM.WriteLog
 #
 #       Description: Enables Logging
