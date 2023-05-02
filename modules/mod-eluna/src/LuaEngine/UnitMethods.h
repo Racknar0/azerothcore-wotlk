@@ -836,11 +836,7 @@ namespace LuaUnit
      */
     int GetLevel(lua_State* L, Unit* unit)
     {
-#ifdef TRINITY
         Eluna::Push(L, unit->GetLevel());
-#else
-        Eluna::Push(L, unit->getLevel());
-#endif
         return 1;
     }
 
@@ -1442,6 +1438,34 @@ namespace LuaUnit
     }
 
     /**
+     * Returns the [Unit]'s attackers.
+     *
+     * @return table attackers : table of [Unit]s attacking the unit
+     */
+    int GetAttackers(lua_State* L, Unit* unit)
+    {
+        const Unit::AttackerSet& attackers = unit->getAttackers();
+
+        lua_newtable(L);
+        int table = lua_gettop(L);
+        uint32 i = 1;
+        for (Unit* attacker : attackers)
+        {
+            if (!attacker)
+            {
+                continue;
+            }
+
+            Eluna::Push(L, attacker);
+            lua_rawseti(L, table, i);
+            ++i;
+        }
+
+        lua_settop(L, table); // push table to top of stack
+        return 1;
+    }
+
+    /**
      * Sets the [Unit]'s owner GUID to given GUID.
      *
      * @param ObjectGuid guid : new owner guid
@@ -2011,6 +2035,45 @@ namespace LuaUnit
         unit->GetThreatManager().clearReferences();
 #endif
         return 0;
+    }
+
+    /**
+     * Returns the [Unit]'s threat list.
+     *
+     * @return table threatList : table of [Unit]s in the threat list
+     */
+    int GetThreatList(lua_State* L, Unit* unit)
+    {
+        if (!unit->CanHaveThreatList())
+        {
+            Eluna::Push(L);
+            return 1;
+        }
+
+        ThreatContainer::StorageType const& list = unit->GetThreatMgr().GetThreatList();
+
+        lua_newtable(L);
+        int table = lua_gettop(L);
+        uint32 i = 1;
+        for (ThreatReference* item : list)
+        {
+            if (!item)
+            {
+                continue;
+            }
+            Unit* victim = item->GetVictim();
+            if (!victim)
+            {
+                continue;
+            }
+
+            Eluna::Push(L, victim);
+            lua_rawseti(L, table, i);
+            ++i;
+        }
+
+        lua_settop(L, table); // push table to top of stack
+        return 1;
     }
 
     /**

@@ -777,6 +777,11 @@ public:
         sEluna->OnQuestRewardItem(player, item, count);
     }
 
+    void OnGroupRollRewardItem(Player* player, Item* item, uint32 count, RollVote voteType, Roll* roll) override
+    {
+        sEluna->OnGroupRollRewardItem(player, item, count, voteType, roll);
+    }
+
     void OnCreateItem(Player* player, Item* item, uint32 count) override
     {
         sEluna->OnCreateItem(player, item, count);
@@ -901,16 +906,8 @@ public:
 
     void OnWorldObjectSetMap(WorldObject* object, Map* /*map*/) override
     {
-        delete object->elunaEvents;
-
-        // On multithread replace this with a pointer to map's Eluna pointer stored in a map
-        object->elunaEvents = new ElunaEventProcessor(&Eluna::GEluna, object);
-    }
-
-    void OnWorldObjectResetMap(WorldObject* object) override
-    {
-        delete object->elunaEvents;
-        object->elunaEvents = nullptr;
+        if (!object->elunaEvents)
+            object->elunaEvents = new ElunaEventProcessor(&Eluna::GEluna, object);
     }
 
     void OnWorldObjectUpdate(WorldObject* object, uint32 diff) override
