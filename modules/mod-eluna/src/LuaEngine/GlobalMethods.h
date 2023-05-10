@@ -682,7 +682,7 @@ namespace LuaGlobalFunctions
      *     PLAYER_EVENT_ON_DUEL_REQUEST            =     9,        // (event, target, challenger)
      *     PLAYER_EVENT_ON_DUEL_START              =     10,       // (event, player1, player2)
      *     PLAYER_EVENT_ON_DUEL_END                =     11,       // (event, winner, loser, type)
-     *     PLAYER_EVENT_ON_GIVE_XP                 =     12,       // (event, player, amount, victim) - Can return new XP amount
+     *     PLAYER_EVENT_ON_GIVE_XP                 =     12,       // (event, player, amount, victim, source) - Can return new XP amount
      *     PLAYER_EVENT_ON_LEVEL_CHANGE            =     13,       // (event, player, oldLevel)
      *     PLAYER_EVENT_ON_MONEY_CHANGE            =     14,       // (event, player, amount) - Can return new money amount
      *     PLAYER_EVENT_ON_REPUTATION_CHANGE       =     15,       // (event, player, factionId, standing, incremental) - Can return new standing -> if standing == -1, it will prevent default action (rep gain)
@@ -1273,7 +1273,7 @@ namespace LuaGlobalFunctions
     }
 
     template <typename T>
-    int DBQueryAsync(lua_State* L, DatabaseWorkerPool<T>& db)
+    static int DBQueryAsync(lua_State* L, DatabaseWorkerPool<T>& db)
     {
         const char* query = Eluna::CHECKVAL<const char*>(L, 1);
         luaL_checktype(L, 2, LUA_TFUNCTION);
@@ -1361,6 +1361,7 @@ namespace LuaGlobalFunctions
      *     end)
      *
      * @param string sql : query to execute
+     * @param function callback : function that will be called when the results are available
      */
     int WorldDBQueryAsync(lua_State* L)
     {
@@ -1429,6 +1430,7 @@ namespace LuaGlobalFunctions
      * For an example see [Global:WorldDBQueryAsync].
      *
      * @param string sql : query to execute
+     * @param function callback : function that will be called when the results are available
      */
     int CharDBQueryAsync(lua_State* L)
     {
@@ -1497,6 +1499,7 @@ namespace LuaGlobalFunctions
      * For an example see [Global:WorldDBQueryAsync].
      *
      * @param string sql : query to execute
+     * @param function callback : function that will be called when the results are available
      */
     int AuthDBQueryAsync(lua_State* L)
     {
