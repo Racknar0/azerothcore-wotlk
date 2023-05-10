@@ -814,9 +814,9 @@ void Unit::DealDamageMods(Unit const* victim, uint32& damage, uint32* absorb)
 
 uint32 Unit::DealDamage(Unit* attacker, Unit* victim, uint32 damage, CleanDamage const* cleanDamage, DamageEffectType damagetype, SpellSchoolMask damageSchoolMask, SpellInfo const* spellProto, bool durabilityLoss, bool /*allowGM*/, Spell const* damageSpell /*= nullptr*/, bool delayed)
 {
-    if (delayed && attacker->GetTypeId() == TYPEID_PLAYER && attacker->GetGUID() != victim->GetGUID())
+    if (delayed && attacker && attacker->GetTypeId() == TYPEID_PLAYER && attacker->GetGUID() != victim->GetGUID())
     {
-        sWorld->AddDelayedDamage(attacker, victim, damage, cleanDamage, damagetype, damageSchoolMask, spellProto, durabilityLoss);
+        sWorld->AddDelayedDamage(attacker->GetGUID(), victim->GetGUID(), damage, cleanDamage, damagetype, damageSchoolMask, spellProto, durabilityLoss, attacker->GetMapId(), attacker->GetInstanceId());
         return 0;
     }
 
