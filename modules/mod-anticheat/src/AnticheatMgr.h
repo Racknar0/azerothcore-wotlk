@@ -36,7 +36,7 @@
 class Player;
 class AnticheatData;
 
-enum ReportTypes
+enum ReportTypes : uint8
 {
     SPEED_HACK_REPORT = 0,
     FLY_HACK_REPORT = 1,
@@ -103,7 +103,7 @@ class AnticheatMgr
 
         uint32 GetTotalReports(ObjectGuid guid);
         float GetAverage(ObjectGuid guid);
-        uint32 GetTypeReports(ObjectGuid guid, uint8 type);
+        uint32 GetTypeReports(ObjectGuid guid, ReportTypes type);
 
         void AnticheatGlobalCommand(ChatHandler* handler);
         void AnticheatDeleteCommand(ObjectGuid guid);
@@ -129,11 +129,14 @@ class AnticheatMgr
         void BGreport(Player* player);
         void CheckStartPositions(Player* player);
         void BGStartExploit(Player* player, MovementInfo movementInfo);
-        void BuildReport(Player* player,uint16 reportType);
-        bool MustCheckTempReports(uint8 type);
+        void BuildReport(Player* player, ReportTypes reportType);
+        bool MustCheckTempReports(ReportTypes type);
+        void SendMiddleScreenGMMessage(std::string str);
+        [[nodiscard]] uint32 GetTeleportSkillCooldownDurationInMS(Player* player) const;
+        [[nodiscard]] float GetTeleportSkillDistanceInYards(Player* player) const;
+        [[nodiscard]] float GetPlayerCurrentSpeedRate(Player* player) const;
         uint32 _counter = 0;
         uint32 _alertFrequency = 0;
-        uint32 _assignedspeeddiff = 0;
         uint32 _updateCheckTimer = 4000;
         uint32 m_MapId;
         std::array<Position, PVP_TEAMS_COUNT> _startPosition;

@@ -606,6 +606,8 @@ ElunaRegister<Player> PlayerMethods[] =
 #ifndef CLASSIC
     { "IsInArenaTeam", &LuaPlayer::IsInArenaTeam },
 #endif
+    { "CanRewardQuest", &LuaPlayer::CanRewardQuest },
+    { "CanCompleteRepeatableQuest", &LuaPlayer::CanCompleteRepeatableQuest },
     { "CanCompleteQuest", &LuaPlayer::CanCompleteQuest },
     { "CanEquipItem", &LuaPlayer::CanEquipItem },
     { "IsFalling", &LuaPlayer::IsFalling },
@@ -813,6 +815,8 @@ ElunaRegister<Creature> CreatureMethods[] =
     { "GetLootRecipient", &LuaCreature::GetLootRecipient },
     { "GetLootRecipientGroup", &LuaCreature::GetLootRecipientGroup },
     { "GetNPCFlags", &LuaCreature::GetNPCFlags },
+    { "GetUnitFlags", &LuaCreature::GetUnitFlags },
+    { "GetUnitFlagsTwo", &LuaCreature::GetUnitFlagsTwo },
     { "GetExtraFlags", &LuaCreature::GetExtraFlags },
 #if defined(CLASSIC) || defined(TBC) || defined(WOTLK)
     { "GetShieldBlockValue", &LuaCreature::GetShieldBlockValue },
@@ -838,6 +842,8 @@ ElunaRegister<Creature> CreatureMethods[] =
     { "SetLootMode", &LuaCreature::SetLootMode },
 #endif
     { "SetNPCFlags", &LuaCreature::SetNPCFlags },
+    { "SetUnitFlags", &LuaCreature::SetUnitFlags },
+    { "SetUnitFlagsTwo", &LuaCreature::SetUnitFlagsTwo },
 #if defined(TRINITY) || AZEROTHCORE
     { "SetReactState", &LuaCreature::SetReactState },
 #endif

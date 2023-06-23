@@ -35,19 +35,24 @@ public:
     AnticheatData();
     ~AnticheatData();
 
+    void SetLastInformations(MovementInfo movementInfo, uint32 opcode, float speedRate);
+
     void SetLastOpcode(uint32 opcode);
     uint32 GetLastOpcode() const;
 
     const MovementInfo& GetLastMovementInfo() const;
     void SetLastMovementInfo(MovementInfo& moveInfo);
 
+    [[nodiscard]] float GetLastSpeedRate() const { return lastSpeedRate; }
+    void SetLastSpeedRate(float speedRate) { lastSpeedRate = speedRate; }
+
     void SetPosition(float x, float y, float z, float o);
 
     uint32 GetTotalReports() const;
     void SetTotalReports(uint32 _totalReports);
 
-    uint32 GetTypeReports(uint32 type) const;
-    void SetTypeReports(uint32 type, uint32 amount);
+    uint32 GetTypeReports(uint8 type) const;
+    void SetTypeReports(uint8 type, uint32 amount);
 
     float GetAverage() const;
     void SetAverage(float _average);
@@ -63,9 +68,13 @@ public:
 
     void SetDailyReportState(bool b);
     bool GetDailyReportState();
+
+    [[nodiscard]] bool GetJustUsedMovementSpell() const { return justUsedMovementSpell; }
+    void SetJustUsedMovementSpell(bool value) { justUsedMovementSpell = value; }
 private:
     uint32 lastOpcode;
     MovementInfo lastMovementInfo;
+    float lastSpeedRate;
     uint32 totalReports;
     uint32 typeReports[MAX_REPORT_TYPES];
     float average;
@@ -73,6 +82,7 @@ private:
     uint32 tempReports[MAX_REPORT_TYPES];
     uint32 tempReportsTimer[MAX_REPORT_TYPES];
     bool hasDailyReport;
+    bool justUsedMovementSpell;
 };
 
 #endif

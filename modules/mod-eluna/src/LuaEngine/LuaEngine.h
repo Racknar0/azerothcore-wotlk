@@ -23,6 +23,7 @@
 #include "LFG.h"
 #include "ElunaUtility.h"
 #include "HttpManager.h"
+#include "EventEmitter.h"
 #include <mutex>
 #include <memory>
 
@@ -241,6 +242,7 @@ public:
     EventMgr* eventMgr;
     HttpManager httpManager;
     QueryCallbackProcessor queryProcessor;
+    EventEmitter<void(std::string)> OnError;
 
     BindingMap< EventKey<Hooks::ServerEvents> >*     ServerEventBindings;
     BindingMap< EventKey<Hooks::PlayerEvents> >*     PlayerEventBindings;
@@ -487,6 +489,7 @@ public:
     bool OnCanJoinLfg(Player* player, uint8 roles, lfg::LfgDungeonSet& dungeons, const std::string& comment);
     bool OnCanGroupInvite(Player* player, std::string& memberName);
     void OnGroupRollRewardItem(Player* player, Item* item, uint32 count, RollVote voteType, Roll* roll);
+    void OnBattlegroundDesertion(Player* player, const BattlegroundDesertionType type);
 
 #ifndef CLASSIC
 #ifndef TBC
