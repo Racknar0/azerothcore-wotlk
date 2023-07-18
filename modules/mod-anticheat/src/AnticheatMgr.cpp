@@ -142,6 +142,182 @@ void AnticheatMgr::SendMiddleScreenGMMessage(std::string str)
     sWorld->SendGlobalGMMessage(&data);
 }
 
+const char* AnticheatMgr::GetReportNameFromReportType(ReportTypes reportType)
+{
+    switch (reportType)
+    {
+        case SPEED_HACK_REPORT:
+            return "Speed";
+        case FLY_HACK_REPORT:
+            return "Fly";
+        case WALK_WATER_HACK_REPORT:
+            return "Walk On Water";
+        case JUMP_HACK_REPORT:
+            return "Jump";
+        case TELEPORT_PLANE_HACK_REPORT:
+            return "Teleport To Plane";
+        case CLIMB_HACK_REPORT:
+            return "Climb";
+        case TELEPORT_HACK_REPORT:
+            return "Teleport";
+        case IGNORE_CONTROL_REPORT:
+            return "Ignore Control";
+        case ZAXIS_HACK_REPORT:
+            return "Ignore Z-Axis";
+        case ANTISWIM_HACK_REPORT:
+            return "Anti-Swim";
+        case GRAVITY_HACK_REPORT:
+            return "Gravity";
+        case ANTIKNOCK_BACK_HACK_REPORT:
+            return "Anti-Knock Back";
+        case NO_FALL_DAMAGE_HACK_REPORT:
+            return "No Fall Damage";
+        case OP_ACK_HACK_REPORT:
+            return "Op Ack";
+        case COUNTER_MEASURES_REPORT:
+            return "Unknown counter measure";   // Synful-Syn: That is silly. It should not be part of the ReportTypes enum because a counter measure is not a hack.
+        default:
+            return "Unknown";
+    }
+}
+
+uint32 AnticheatMgr::GetAlertFrequencyConfigFromReportType(ReportTypes reportType)
+{
+    switch (reportType)
+    {
+        case SPEED_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.Speed", 5));
+        case FLY_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.Fly", 5));
+        case WALK_WATER_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.WaterWalk", 5));
+        case JUMP_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.Jump", 5));
+        case TELEPORT_PLANE_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.TeleportToPlane", 1));
+        case CLIMB_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.Climb", 5));
+        case TELEPORT_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.Teleport", 1));
+        case IGNORE_CONTROL_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.IgnoreControl", 5));
+        case ZAXIS_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.ZAxis", 5));
+        case ANTISWIM_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.AntiSwim", 5));
+        case GRAVITY_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.Gravity", 5));
+        case ANTIKNOCK_BACK_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.Antiknockback", 1));
+        case NO_FALL_DAMAGE_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.NoFallDamage", 1));
+        case OP_ACK_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.OpAck", 1));
+        case COUNTER_MEASURES_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency.CounterMeasure", 5));
+        default:
+            return 1;
+    }
+}
+
+uint32 AnticheatMgr::GetMinimumReportInChatThresholdConfigFromReportType(ReportTypes reportType)
+{
+    switch (reportType)
+    {
+        case SPEED_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.Speed", 50));
+        case FLY_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.Fly", 50));
+        case WALK_WATER_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.WaterWalk", 50));
+        case JUMP_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.Jump", 50));
+        case TELEPORT_PLANE_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.TeleportToPlane", 50));
+        case CLIMB_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.Climb", 50));
+        case TELEPORT_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.Teleport", 1));
+        case IGNORE_CONTROL_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.IgnoreControl", 50));
+        case ZAXIS_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.ZAxis", 50));
+        case ANTISWIM_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.AntiSwim", 50));
+        case GRAVITY_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.Gravity", 50));
+        case ANTIKNOCK_BACK_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.Antiknockback", 50));
+        case NO_FALL_DAMAGE_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.NoFallDamage", 1));
+        case OP_ACK_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.OpAck", 1));
+        case COUNTER_MEASURES_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Min.CounterMeasure", 50));
+        default:
+            return 1;
+    }
+}
+
+uint32 AnticheatMgr::GetMaximumReportInChatThresholdConfigFromReportType(ReportTypes reportType)
+{
+    switch (reportType)
+    {
+        case SPEED_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.Speed", 60));
+        case FLY_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.Fly", 60));
+        case WALK_WATER_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.WaterWalk", 60));
+        case JUMP_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.Jump", 60));
+        case TELEPORT_PLANE_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.TeleportToPlane", 60));
+        case CLIMB_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.Climb", 60));
+        case TELEPORT_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.Teleport", 60));
+        case IGNORE_CONTROL_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.IgnoreControl", 60));
+        case ZAXIS_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.ZAxis", 60));
+        case ANTISWIM_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.AntiSwim", 60));
+        case GRAVITY_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.Gravity", 60));
+        case ANTIKNOCK_BACK_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.Antiknockback", 60));
+        case NO_FALL_DAMAGE_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.NoFallDamage", 60));
+        case OP_ACK_HACK_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.OpAck", 60));
+        case COUNTER_MEASURES_REPORT:
+            return std::max(1u, sConfigMgr->GetOption<uint32>("Anticheat.ReportInChatThreshold.Max.CounterMeasure", 60));
+        default:
+            return 80;
+    }
+}
+
+void AnticheatMgr::BuildAndSendReportToIngameGameMasters(Player* player, ReportTypes reportType)
+{
+    ObjectGuid key = player->GetGUID();
+    uint32 counter = m_Players[key].GetTypeReports(reportType);
+
+    if (counter % GetAlertFrequencyConfigFromReportType(reportType) == 0)
+    {
+        const char* reportName = GetReportNameFromReportType(reportType);
+
+        SendMiddleScreenGMMessage("|cFFFFFC00[Playername:|cFF00FFFF[|cFF60FF00" + player->GetName() + "|cFF00FFFF] Possible cheater! Report name: " + reportName);
+
+        if (counter >= GetMinimumReportInChatThresholdConfigFromReportType(reportType) && counter <= GetMaximumReportInChatThresholdConfigFromReportType(reportType))
+        {
+            uint32 latency = player->GetSession()->GetLatency();
+            const char* playerName = player->GetName().c_str();
+            sWorld->SendGMText(LANG_ANTICHEAT_ALERT, playerName, playerName, latency, reportName);
+        }
+    }
+}
+
 uint32 AnticheatMgr::GetTeleportSkillCooldownDurationInMS(Player* player) const
 {
     switch (player->getClass())
@@ -740,23 +916,16 @@ void AnticheatMgr::TeleportHackDetection(Player* player, MovementInfo movementIn
 
     if ((xDiff >= 50.0f || yDiff >= 50.0f) && !player->CanTeleport() && !player->IsBeingTeleported())
     {
-        if (m_Players[key].GetTotalReports() > sConfigMgr->GetOption<uint32>("Anticheat.ReportsForIngameWarnings", 70))
+        uint32 counter = m_Players[key].GetTypeReports(TELEPORT_HACK_REPORT);
+        uint32 alertFrequency = GetAlertFrequencyConfigFromReportType(TELEPORT_HACK_REPORT);
+        if (counter % alertFrequency == 0)
         {
-            _alertFrequency = sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency", 5);
-            // So we dont divide by 0 by accident
-            if (_alertFrequency < 1)
-                _alertFrequency = 1;
-            if (++_counter % _alertFrequency == 0)
-            {
-                SendMiddleScreenGMMessage("|cFFFFFC00[Playername:|cFF00FFFF[|cFF60FF00" + player->GetName() + "|cFF00FFFF] Possible Teleport Hack Detected!");
+            SendMiddleScreenGMMessage("|cFFFFFC00[Playername:|cFF00FFFF[|cFF60FF00" + player->GetName() + "|cFF00FFFF] Possible Teleport Hack Detected!");
 
-                // need better way to limit chat spam
-                if (m_Players[key].GetTotalReports() >= sConfigMgr->GetOption<uint32>("Anticheat.ReportinChat.Min", 70) && m_Players[key].GetTotalReports() <= sConfigMgr->GetOption<uint32>("Anticheat.ReportinChat.Max", 80))
-                {
-                    uint32 latency = player->GetSession()->GetLatency();
-                    sWorld->SendGMText(LANG_ANTICHEAT_TELEPORT, player->GetName().c_str(), player->GetName().c_str(), latency, xDiff, yDiff, zDiff);
-                }
-                _counter = 0;
+            if (counter >= GetMinimumReportInChatThresholdConfigFromReportType(TELEPORT_HACK_REPORT) && counter <= GetMaximumReportInChatThresholdConfigFromReportType(TELEPORT_HACK_REPORT))
+            {
+                uint32 latency = player->GetSession()->GetLatency();
+                sWorld->SendGMText(LANG_ANTICHEAT_TELEPORT, player->GetName().c_str(), player->GetName().c_str(), latency, xDiff, yDiff, zDiff);
             }
         }
         if (sConfigMgr->GetOption<bool>("Anticheat.WriteLog", true))
@@ -820,22 +989,15 @@ void AnticheatMgr::IgnoreControlHackDetection(Player* player, MovementInfo movem
         bool unrestricted = newX != lastX || newY != lastY;
         if (unrestricted)
         {
-            if (m_Players[key].GetTotalReports() > sConfigMgr->GetOption<uint32>("Anticheat.ReportsForIngameWarnings", 70))
+            uint32 counter = m_Players[key].GetTypeReports(IGNORE_CONTROL_REPORT);
+            uint32 alertFrequency = GetAlertFrequencyConfigFromReportType(IGNORE_CONTROL_REPORT);
+            if (counter % alertFrequency == 0)
             {
-                _alertFrequency = sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency", 5);
-                // So we dont divide by 0 by accident
-                if (_alertFrequency < 1)
-                    _alertFrequency = 1;
-                if (++_counter % _alertFrequency == 0)
-                {
-                    SendMiddleScreenGMMessage("|cFFFFFC00[Playername:|cFF00FFFF[|cFF60FF00" + player->GetName() + "|cFF00FFFF] Possible Ignore Control Hack Detected!");
+                SendMiddleScreenGMMessage("|cFFFFFC00[Playername:|cFF00FFFF[|cFF60FF00" + player->GetName() + "|cFF00FFFF] Possible Ignore Control Hack Detected!");
 
-                    // need better way to limit chat spam
-                    if (m_Players[key].GetTotalReports() >= sConfigMgr->GetOption<uint32>("Anticheat.ReportinChat.Min", 70) && m_Players[key].GetTotalReports() <= sConfigMgr->GetOption<uint32>("Anticheat.ReportinChat.Max", 80))
-                    {
-                        sWorld->SendGMText(LANG_ANTICHEAT_IGNORECONTROL, player->GetName().c_str(), latency);
-                    }
-                    _counter = 0;
+                if (counter >= GetMinimumReportInChatThresholdConfigFromReportType(IGNORE_CONTROL_REPORT) && counter <= GetMaximumReportInChatThresholdConfigFromReportType(IGNORE_CONTROL_REPORT))
+                {
+                    sWorld->SendGMText(LANG_ANTICHEAT_IGNORECONTROL, player->GetName().c_str(), latency);
                 }
             }
             if (sConfigMgr->GetOption<bool>("Anticheat.WriteLog", true))
@@ -980,25 +1142,8 @@ void AnticheatMgr::ZAxisHackDetection(Player* player, MovementInfo movementInfo)
     if (m_Players[key].GetLastMovementInfo().pos.GetPositionZ() == movementInfo.pos.GetPositionZ()
         && player->GetPositionZ() >= player->GetFloorZ() + 2.5f)
     {
-        if (m_Players[key].GetTotalReports() > sConfigMgr->GetOption<uint32>("Anticheat.ReportsForIngameWarnings", 70))
-        {
-            _alertFrequency = sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency", 5);
-            // So we dont divide by 0 by accident
-            if (_alertFrequency < 1)
-                _alertFrequency = 1;
-            if (++_counter % _alertFrequency == 0)
-            {
-                SendMiddleScreenGMMessage("|cFFFFFC00[Playername:|cFF00FFFF[|cFF60FF00" + player->GetName() + "|cFF00FFFF] Possible Ignore Zaxis Hack Detected!");
+        BuildAndSendReportToIngameGameMasters(player, ZAXIS_HACK_REPORT);
 
-                // need better way to limit chat spam
-                if (m_Players[key].GetTotalReports() >= sConfigMgr->GetOption<uint32>("Anticheat.ReportinChat.Min", 70) && m_Players[key].GetTotalReports() <= sConfigMgr->GetOption<uint32>("Anticheat.ReportinChat.Max", 80))
-                {
-                    uint32 latency = player->GetSession()->GetLatency();
-                    sWorld->SendGMText(LANG_ANTICHEAT_ALERT, player->GetName().c_str(), player->GetName().c_str(), latency);
-                }
-                _counter = 0;
-            }
-        }
         if (sConfigMgr->GetOption<bool>("Anticheat.WriteLog", true))
         {
             uint32 latency = player->GetSession()->GetLatency();
@@ -1143,23 +1288,19 @@ void AnticheatMgr::NoFallDamageDetection(Player* player, MovementInfo movementIn
 
 void AnticheatMgr::BGreport(Player* player)
 {
-    _alertFrequency = sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency", 5);
-    // So we dont divide by 0 by accident
-    if (_alertFrequency < 1)
-        _alertFrequency = 1;
-    if (++_counter % _alertFrequency == 0)
+    ObjectGuid key = player->GetGUID();
+    uint32 counter = m_Players[key].GetTypeReports(TELEPORT_HACK_REPORT);
+    uint32 alertFrequency = GetAlertFrequencyConfigFromReportType(TELEPORT_HACK_REPORT);
+    if (counter % alertFrequency == 0)
     {
-        ObjectGuid key = player->GetGUID();
-
         SendMiddleScreenGMMessage("|cFFFFFC00[Playername:|cFF00FFFF[|cFF60FF00" + player->GetName() + "|cFF00FFFF] Player Outside of Starting SPOT before BG has started!");
 
         // need better way to limit chat spam
-        if (m_Players[key].GetTotalReports() >= sConfigMgr->GetOption<uint32>("Anticheat.ReportinChat.Min", 70) && m_Players[key].GetTotalReports() <= sConfigMgr->GetOption<uint32>("Anticheat.ReportinChat.Max", 80))
+        if (counter >= GetMinimumReportInChatThresholdConfigFromReportType(TELEPORT_HACK_REPORT) && counter <= GetMaximumReportInChatThresholdConfigFromReportType(TELEPORT_HACK_REPORT))
         {
             uint32 latency = player->GetSession()->GetLatency();
             sWorld->SendGMText(LANG_ANTICHEAT_BG_EXPLOIT, player->GetName().c_str(), player->GetName().c_str(), latency);
         }
-        _counter = 0;
     }
 
     if (sConfigMgr->GetOption<bool>("Anticheat.WriteLog", true))
@@ -1526,25 +1667,7 @@ void AnticheatMgr::BuildReport(Player* player, ReportTypes reportType)
         }
     }
 
-    if (m_Players[key].GetTotalReports() > sConfigMgr->GetOption<uint32>("Anticheat.ReportsForIngameWarnings", 70))
-    {
-        _alertFrequency = sConfigMgr->GetOption<uint32>("Anticheat.AlertFrequency", 5);
-        // So we dont divide by 0 by accident
-        if (_alertFrequency < 1)
-            _alertFrequency = 1;
-        if (++_counter % _alertFrequency == 0)
-        {
-            SendMiddleScreenGMMessage("|cFFFFFC00[Playername:|cFF00FFFF[|cFF60FF00" + player->GetName() + "|cFF00FFFF] Possible cheater!");
-
-            // need better way to limit chat spam
-            if (m_Players[key].GetTotalReports() >= sConfigMgr->GetOption<uint32>("Anticheat.ReportinChat.Min", 70) && m_Players[key].GetTotalReports() <= sConfigMgr->GetOption<uint32>("Anticheat.ReportinChat.Max", 80))
-            {
-                uint32 latency = player->GetSession()->GetLatency();
-                sWorld->SendGMText(LANG_ANTICHEAT_ALERT, player->GetName().c_str(), player->GetName().c_str(), latency);
-            }
-            _counter = 0;
-        }
-    }
+    BuildAndSendReportToIngameGameMasters(player, reportType);
 
     if (sConfigMgr->GetOption<bool>("Anticheat.KickPlayer", true) && m_Players[key].GetTotalReports() > sConfigMgr->GetOption<uint32>("Anticheat.ReportsForKick", 70))
     {

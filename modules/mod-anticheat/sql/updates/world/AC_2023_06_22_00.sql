@@ -46,26 +46,8 @@ INSERT INTO `acore_string` (`entry`, `content_default`, `locale_koKR`, `locale_f
 ),
 (
     30092,
-    '|cffffff00[|cffff0000COUNTER MEASURE ALERT|r|cffffff00]:|r |cFFFF8C00|r %s |cFFFF8C00[|Hplayer:%s|h%s|h|r|cFFFF8C00]',
+    '|cffffff00[|cffff0000ANTICHEAT ALERT|r|cffffff00]:|r|cFFFF8C00|r %s |cFFFF8C00[|Hplayer:%s|h%s|h|r|cFFFF8C00]',
     NULL,
-    '|cffffff00[|cffff0000ALERTE CONTRE MESURE|r|cffffff00]:|r |cFFFF8C00|r %s |cFFFF8C00[|Hplayer:%s|h%s|h|r|cFFFF8C00]',
+    '|cffffff00[|cffff0000ALERTE ANTICHEAT|r|cffffff00]:|r|cFFFF8C00|r %s |cFFFF8C00[|Hplayer:%s|h%s|h|r|cFFFF8C00]',
     NULL, NULL, NULL, NULL, NULL, NULL
 );
-
-DELETE FROM `command` WHERE  `name`='anticheat jail';
-DELETE FROM `command` WHERE  `name`='anticheat delete';
-DELETE FROM `command` WHERE  `name`='anticheat player';
-DELETE FROM `command` WHERE  `name`='anticheat';
-DELETE FROM `command` WHERE  `name`='anticheat global';
-DELETE FROM `command` WHERE  `name`='anticheat parole';
-DELETE FROM `command` WHERE  `name`='anticheat purge';
-DELETE FROM `command` WHERE  `name`='anticheat warn';
-INSERT INTO `command` (`name`, `security`, `help`) VALUES 
-('anticheat', 2, 'Syntax: .anticheat\r\n\r\nDisplay the access level of anticheat commands if you possess the necessary permissions.'),
-('anticheat global', 2, 'Syntax: .anticheat global\r\n\r\nDisplay if anticheat is active with global statistics.'),
-('anticheat player', 2, 'Syntax: .anticheat player [$charactername]\r\n\r\nDisplay anticheat statistics of current session of player.'),
-('anticheat delete', 3, 'Syntax: .anticheat delete [$charactername]\r\n\r\nDeletes anticheat statistics of current session of player.'),
-('anticheat jail', 2, 'Syntax: .anticheat jail [$charactername]\r\n\r\nJails and restricts player and teleports GM cmd user to jail with no restrictions'),
-('anticheat parole', 3, 'Syntax: .anticheat parole [$charactername]\r\n\r\nDeletes anticheat statistics, removes jail restrictions, and sends to faction capital of player.'),
-('anticheat purge', 3, 'Syntax: .anticheat purge\r\n\r\nDeletes stored statistics of daily_players_reports table.'),
-('anticheat warn', 2, 'Syntax: .anticheat warn [$charactername]\r\n\r\nSends individual player they are being monitored for possible cheating.');

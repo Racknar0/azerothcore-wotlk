@@ -105,6 +105,8 @@ class AnticheatMgr
         float GetAverage(ObjectGuid guid);
         uint32 GetTypeReports(ObjectGuid guid, ReportTypes type);
 
+        [[nodiscard]] const char* GetReportNameFromReportType(ReportTypes reportType);
+
         void AnticheatGlobalCommand(ChatHandler* handler);
         void AnticheatDeleteCommand(ObjectGuid guid);
         void AnticheatPurgeCommand(ChatHandler* handler);
@@ -132,11 +134,15 @@ class AnticheatMgr
         void BuildReport(Player* player, ReportTypes reportType);
         bool MustCheckTempReports(ReportTypes type);
         void SendMiddleScreenGMMessage(std::string str);
+
+        [[nodiscard]] uint32 GetAlertFrequencyConfigFromReportType(ReportTypes reportType);
+        [[nodiscard]] uint32 GetMinimumReportInChatThresholdConfigFromReportType(ReportTypes reportType);
+        [[nodiscard]] uint32 GetMaximumReportInChatThresholdConfigFromReportType(ReportTypes reportType);
+        void BuildAndSendReportToIngameGameMasters(Player* player, ReportTypes reportType);
+
         [[nodiscard]] uint32 GetTeleportSkillCooldownDurationInMS(Player* player) const;
         [[nodiscard]] float GetTeleportSkillDistanceInYards(Player* player) const;
         [[nodiscard]] float GetPlayerCurrentSpeedRate(Player* player) const;
-        uint32 _counter = 0;
-        uint32 _alertFrequency = 0;
         uint32 _updateCheckTimer = 4000;
         uint32 m_MapId;
         std::array<Position, PVP_TEAMS_COUNT> _startPosition;

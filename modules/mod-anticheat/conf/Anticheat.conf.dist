@@ -19,33 +19,69 @@ Anticheat.Enabled = 1
 
 Anticheat.EnabledOnGmAccounts = 0
 
-#     Anticheat.ReportsForIngameWarnings
-#       Description: How many reports the player must have to notify to GameMasters ingame when he generates a new report.
-#       Default:     70
-
-Anticheat.ReportsForIngameWarnings = 70
-
 #     Anticheat.MaxReportsForDailyReport
 #       Description: How many reports must the player have to make a report that it is in DB for a day (not only during the player's session).
 #       Default:     70
 
 Anticheat.MaxReportsForDailyReport = 70
 
-#     Anticheat.ReportinChat
-#       Description: min and max total reports to trigger gm chat message spam.
-#       Default:     So with 70 being min and 80 being max, it will spam gm in chat 10 times.
-# Anticheat.ReportinChat.Min = 70
-# Anticheat.ReportinChat.Max = 80
+#     Anticheat.ReportInChatThreshold.Min.[Report type]
+#     Anticheat.ReportInChatThreshold.Max.[Report type]
+#       Description: Mininum and maximum thresholds of reports needed to send an alert into the chatboxes of the currently online game masters.
+#                    With a minimum of 50 and a maximum of 60, the game master will receive into their chatbox a maximum of 10 alerts for a given cheat.
+#                    The maximum should not be lower than a minimum value or it would never show the report into the game master's chatbox.
 
-Anticheat.ReportinChat.Min = 70
-Anticheat.ReportinChat.Max = 80
+Anticheat.ReportInChatThreshold.Min.Speed = 50
+Anticheat.ReportInChatThreshold.Max.Speed = 60
+Anticheat.ReportInChatThreshold.Min.Fly = 50
+Anticheat.ReportInChatThreshold.Max.Fly = 60
+Anticheat.ReportInChatThreshold.Min.WaterWalk = 50
+Anticheat.ReportInChatThreshold.Max.WaterWalk = 60
+Anticheat.ReportInChatThreshold.Min.Jump = 50
+Anticheat.ReportInChatThreshold.Max.Jump = 60
+Anticheat.ReportInChatThreshold.Min.TeleportToPlane = 50
+Anticheat.ReportInChatThreshold.Max.TeleportToPlane = 60
+Anticheat.ReportInChatThreshold.Min.Climb = 50
+Anticheat.ReportInChatThreshold.Max.Climb = 60
+Anticheat.ReportInChatThreshold.Min.Teleport = 1
+Anticheat.ReportInChatThreshold.Max.Teleport = 60
+Anticheat.ReportInChatThreshold.Min.IgnoreControl = 50
+Anticheat.ReportInChatThreshold.Max.IgnoreControl = 60
+Anticheat.ReportInChatThreshold.Min.ZAxis = 50
+Anticheat.ReportInChatThreshold.Max.ZAxis = 60
+Anticheat.ReportInChatThreshold.Min.AntiSwim = 50
+Anticheat.ReportInChatThreshold.Max.AntiSwim = 60
+Anticheat.ReportInChatThreshold.Min.Gravity = 50
+Anticheat.ReportInChatThreshold.Max.Gravity = 60
+Anticheat.ReportInChatThreshold.Min.Antiknockback = 50
+Anticheat.ReportInChatThreshold.Max.Antiknockback = 60
+Anticheat.ReportInChatThreshold.Min.NoFallDamage = 1
+Anticheat.ReportInChatThreshold.Max.NoFallDamage = 60
+Anticheat.ReportInChatThreshold.Min.OpAck = 1
+Anticheat.ReportInChatThreshold.Max.OpAck = 60
+Anticheat.ReportInChatThreshold.Min.CounterMeasure = 50
+Anticheat.ReportInChatThreshold.Max.CounterMeasure = 60
 
-#     Anticheat.AlertFrequency
-#       Description: Once Ingame warngings and report in chat min is met, this will throttle to alert the gms every other count
-#       Default:     So with 1 being the default, u will get a message alert for every 1 violations.
-#       Anticheat.AlertFrequency = 1
+#     Anticheat.AlertFrequency.[Report type]
+#       Description: When a player triggers an alert, its report type count will increase.
+#                    When that count increases, the game masters will receive an alert of the respective report type into their chatbox if that count is a multiple of the following config.
+#                    If you have an AlertFrequency of 3 and wish to display a specific alert a maximum of 5 times, the ReportInChatThreshold.Max needs to be 15 units higher than its Min counterpart.
 
-Anticheat.AlertFrequency = 1
+Anticheat.AlertFrequency.Speed = 5
+Anticheat.AlertFrequency.Fly = 5
+Anticheat.AlertFrequency.WaterWalk = 5
+Anticheat.AlertFrequency.Jump = 5
+Anticheat.AlertFrequency.TeleportToPlane = 1
+Anticheat.AlertFrequency.Climb = 5
+Anticheat.AlertFrequency.Teleport = 1
+Anticheat.AlertFrequency.IgnoreControl = 5
+Anticheat.AlertFrequency.ZAxis = 5
+Anticheat.AlertFrequency.AntiSwim = 5
+Anticheat.AlertFrequency.Gravity = 5
+Anticheat.AlertFrequency.Antiknockback = 1
+Anticheat.AlertFrequency.NoFallDamage = 1
+Anticheat.AlertFrequency.OpAck = 1
+Anticheat.AlertFrequency.CounterMeasure = 5
 
 #     Anticheat.LoginMessage
 #       Description: Enable login message "This server is running an Anticheat module."

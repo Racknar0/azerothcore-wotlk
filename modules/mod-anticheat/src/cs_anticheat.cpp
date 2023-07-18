@@ -200,6 +200,7 @@ public:
             ObjectGuid guid = player->GetGUID();
             uint32 latency = playerTarget->GetSession()->GetLatency();
 
+            const char* counterMeasureTemplate;
             const char* lineTemplate_u;
             const char* lineTemplate_s;
             const char* lineSeparator;
@@ -209,7 +210,8 @@ public:
             const char* averageTotalTemplate;
             if (handler->IsConsole())
             {
-                lineTemplate_u = "%s: %u";
+                counterMeasureTemplate = "Counter Measures Deployed: %u";
+                lineTemplate_u = "%s Reports: %u";
                 lineTemplate_s = "%s: %s";
                 lineSeparator = "-----------------------------------------------------------------";
                 playerInformationTemplate = "Information about player %s";
@@ -219,7 +221,8 @@ public:
             }
             else
             {
-                lineTemplate_u = "|cffff0000%s:|cffffff00 %u";
+                counterMeasureTemplate = "|cffff0000Counter Measures Deployed:|cffffff00 %u";
+                lineTemplate_u = "|cffff0000%s Reports:|cffffff00 %u";
                 lineTemplate_s = "|cffff0000%s:|cffffff00 %s";
                 lineSeparator = "|cFFFFA500-----------------------------------------------------------------";
                 playerInformationTemplate = "|cFF20B2AAInformation about player:|cffffff00 %s";
@@ -284,52 +287,52 @@ public:
 
             float average = sAnticheatMgr->GetAverage(guid);
             uint32 total_reports = sAnticheatMgr->GetTotalReports(guid);
-            uint32 counter_measures_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::COUNTER_MEASURES_REPORT);
+            uint32 counter_measures_reports = sAnticheatMgr->GetTypeReports(guid, COUNTER_MEASURES_REPORT);
 
-            handler->PSendSysMessage(lineTemplate_u, "Counter Measures Deployed", counter_measures_reports);
+            handler->PSendSysMessage(counterMeasureTemplate, counter_measures_reports);
             handler->PSendSysMessage(averageTotalTemplate, average, total_reports);
 
-            if (uint32 speed_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::SPEED_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Speed Reports", speed_reports);
+            if (uint32 speed_reports = sAnticheatMgr->GetTypeReports(guid, SPEED_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(SPEED_HACK_REPORT), speed_reports);
 
-            if (uint32 fly_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::FLY_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Fly Reports", fly_reports);
+            if (uint32 fly_reports = sAnticheatMgr->GetTypeReports(guid, FLY_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(FLY_HACK_REPORT), fly_reports);
 
-            if (uint32 jump_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::JUMP_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Jump Reports", jump_reports);
+            if (uint32 jump_reports = sAnticheatMgr->GetTypeReports(guid, JUMP_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(JUMP_HACK_REPORT), jump_reports);
 
-            if (uint32 waterwalk_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::WALK_WATER_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Walk On Water Reports", waterwalk_reports);
+            if (uint32 waterwalk_reports = sAnticheatMgr->GetTypeReports(guid, WALK_WATER_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(WALK_WATER_HACK_REPORT), waterwalk_reports);
 
-            if (uint32 teleportplane_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::TELEPORT_PLANE_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Teleport To Plane Reports", teleportplane_reports);
+            if (uint32 teleportplane_reports = sAnticheatMgr->GetTypeReports(guid, TELEPORT_PLANE_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(TELEPORT_PLANE_HACK_REPORT), teleportplane_reports);
 
-            if (uint32 teleport_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::TELEPORT_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Teleport Reports", teleport_reports);
+            if (uint32 teleport_reports = sAnticheatMgr->GetTypeReports(guid, TELEPORT_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(TELEPORT_HACK_REPORT), teleport_reports);
 
-            if (uint32 climb_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::CLIMB_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Climb Reports", climb_reports);
+            if (uint32 climb_reports = sAnticheatMgr->GetTypeReports(guid, CLIMB_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(CLIMB_HACK_REPORT), climb_reports);
 
-            if (uint32 ignorecontrol_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::IGNORE_CONTROL_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Ignore Control Reports", ignorecontrol_reports);
+            if (uint32 ignorecontrol_reports = sAnticheatMgr->GetTypeReports(guid, IGNORE_CONTROL_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(IGNORE_CONTROL_REPORT), ignorecontrol_reports);
 
-            if (uint32 zaxis_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::ZAXIS_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Ignore Z-Axis Reports", zaxis_reports);
+            if (uint32 zaxis_reports = sAnticheatMgr->GetTypeReports(guid, ZAXIS_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(ZAXIS_HACK_REPORT), zaxis_reports);
 
-            if (uint32 antiswim_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::ANTISWIM_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Anti-Swim Reports", antiswim_reports);
+            if (uint32 antiswim_reports = sAnticheatMgr->GetTypeReports(guid, ANTISWIM_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(ANTISWIM_HACK_REPORT), antiswim_reports);
 
-            if (uint32 gravity_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::GRAVITY_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Gravity Reports", gravity_reports);
+            if (uint32 gravity_reports = sAnticheatMgr->GetTypeReports(guid, GRAVITY_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(GRAVITY_HACK_REPORT), gravity_reports);
 
-            if (uint32 antiknockback_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::ANTIKNOCK_BACK_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Anti-Knock Back Reports", antiknockback_reports);
+            if (uint32 antiknockback_reports = sAnticheatMgr->GetTypeReports(guid, ANTIKNOCK_BACK_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(ANTIKNOCK_BACK_HACK_REPORT), antiknockback_reports);
 
-            if (uint32 no_fall_damage_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::NO_FALL_DAMAGE_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "No Fall Damage Reports", no_fall_damage_reports);
+            if (uint32 no_fall_damage_reports = sAnticheatMgr->GetTypeReports(guid, NO_FALL_DAMAGE_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(NO_FALL_DAMAGE_HACK_REPORT), no_fall_damage_reports);
 
-            if (uint32 op_ack_reports = sAnticheatMgr->GetTypeReports(guid, ReportTypes::OP_ACK_HACK_REPORT))
-                handler->PSendSysMessage(lineTemplate_u, "Op Ack Reports", op_ack_reports);
+            if (uint32 op_ack_reports = sAnticheatMgr->GetTypeReports(guid, OP_ACK_HACK_REPORT))
+                handler->PSendSysMessage(lineTemplate_u, sAnticheatMgr->GetReportNameFromReportType(OP_ACK_HACK_REPORT), op_ack_reports);
 
             return true;
         }
