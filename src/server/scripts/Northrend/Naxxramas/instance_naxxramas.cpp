@@ -656,11 +656,12 @@ public:
         {
             case EVENT_THADDIUS_SCREAMS:
             {
-                if (GetBossState(BOSS_THADDIUS) == DONE)
-                    break;
+                // if (GetBossState(BOSS_THADDIUS) == DONE)
+                //     break;
 
-                instance->PlayDirectSoundToMap(SOUND_SCREAM + urand(0, 3));
-                return _events.ScheduleEvent(EVENT_THADDIUS_SCREAMS, 5min, 10min);
+                // instance->PlayDirectSoundToMap(SOUND_SCREAM + urand(0, 3));
+                // return _events.ScheduleEvent(EVENT_THADDIUS_SCREAMS, 2min, 2min + 30s);
+                break;
             }
             case EVENT_AND_THEY_WOULD_ALL_GO_DOWN_TOGETHER:
                 _horsemanAchievement = false;
@@ -809,6 +810,7 @@ private:
     EventMap _events;
 };
 
+
 class at_naxxramas_hub_portal : public AreaTriggerScript
 {
 public:
@@ -822,15 +824,19 @@ public:
         InstanceScript* instance = player->GetInstanceScript();
         if (!instance)
             return false;
+        if (
+            instance->GetBossState(BOSS_LOATHEB) == DONE &&
+            instance->GetBossState(BOSS_THADDIUS) == DONE &&
+            instance->GetBossState(BOSS_HORSEMAN) == DONE &&
+            instance->GetBossState(BOSS_MAEXXNA) == DONE)
+        {
+            player->TeleportTo(SapphironTeleportPos);
+            return true;
+        }
 
-        if ((instance->GetBossState(BOSS_MAEXXNA)  != DONE) ||
-            (instance->GetBossState(BOSS_LOATHEB)  != DONE) ||
-            (instance->GetBossState(BOSS_THADDIUS) != DONE) ||
-            (instance->GetBossState(BOSS_HORSEMAN) != DONE))
-            return false;
+        ChatHandler(player->GetSession()).PSendSysMessage("You must defeat the four horsemen, Maexxna, Thaddius and Loatheb before you can use this portal.");
 
-        player->TeleportTo(SapphironTeleportPos);
-        return true;
+        return false;
     }
 };
 
