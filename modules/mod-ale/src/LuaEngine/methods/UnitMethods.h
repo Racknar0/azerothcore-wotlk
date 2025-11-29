@@ -73,7 +73,7 @@ namespace LuaUnit
      * @param bool apply = false : Whether the modifier should be applied or removed
      * @return bool : Whether the stat modification was successful
      */
-    int HandleStatModifier(lua_State* L, Unit* unit)
+    int HandleStatFlatModifier(lua_State* L, Unit* unit)
     {
         int32 stat = ALE::CHECKVAL<int32>(L, 2);
         int8  type = ALE::CHECKVAL<int8>(L, 3);
@@ -81,7 +81,7 @@ namespace LuaUnit
         float value = ALE::CHECKVAL<float>(L, 4);
         bool apply = ALE::CHECKVAL<bool>(L, 5, false);
 
-        ALE::Push(L, unit->HandleStatModifier(UnitMods(UNIT_MOD_STAT_START + stat), (UnitModifierType)type, value, apply));
+        ALE::Push(L, unit->HandleStatFlatModifier(UnitMods(UNIT_MOD_STAT_START + stat), (UnitModifierFlatType)type, value, apply));
         return 1;
     }
 
@@ -1415,11 +1415,10 @@ namespace LuaUnit
         uint32 type = ALE::CHECKVAL<uint32>(L, 2);
         float rate = ALE::CHECKVAL<float>(L, 3);
         bool forced = ALE::CHECKVAL<bool>(L, 4, false);
-        (void)forced; // ensure that the variable is referenced in order to pass compiler checks
         if (type >= MAX_MOVE_TYPE)
             return luaL_argerror(L, 2, "valid UnitMoveType expected");
 
-        unit->SetSpeed((UnitMoveType)type, rate);
+        unit->SetSpeed((UnitMoveType)type, rate, forced);
 
         return 0;
     }
