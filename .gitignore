@@ -102,3 +102,17 @@ local.properties
 #  !modules/yourmodule
 #
 # ==================
+
+
+!modules/mod-1v1-arena
+!modules/mod-ale
+!modules/mod-anticheat
+!modules/mod-bg-reward
+!modules/mod-cfbg
+!modules/mod-desertion-warnings
+!modules/mod-npc-spectator
+!modules/mod-quest-loot-party
+!modules/mod-server-auto-shutdown
+!modules/mod-transmog
+!modules/Recache
+!modules/wintergrasp_ip_and_afk_checker

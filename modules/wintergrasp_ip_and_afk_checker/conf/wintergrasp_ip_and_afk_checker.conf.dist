@@ -1,0 +1,50 @@
+#
+# Copyright (C) 2016+ AzerothCore <www.azerothcore.org>, released under GNU AGPL v3 license: https://github.com/azerothcore/azerothcore-wotlk/blob/master/LICENSE-AGPL3
+#
+
+[worldserver]
+
+########################################
+# My module configuration
+########################################
+#
+#    WGChecker.Enable
+#        Description: Enable my module and print "Hello World" message at server start
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+WGChecker.Enable = 1
+
+########################################
+#    WGChecker.AFKHonorRemove
+#        Description: Honor points to remove when a player is kicked for being AFK in Wintergrasp
+#        Default:     100
+#
+
+WGChecker.AFKHonorRemove = 7000
+
+########################################
+#    WGChecker.WhiteList
+#        Description: Lista blanca de IPS que no se tomarán encuenta en la revisión
+#        Default:     '127.0.0.1;127.0.0.3'
+#
+
+WGChecker.WhiteList = "127.0.0.1;127.0.0.2"
+
+########################################
+#    WGChecker.TeleportMode
+#        Description: A donde teletransporta al sacarlo de WG
+#        Default:   0 - Default
+#                   1 - Dalaran
+#                   2 - Zona Inicio
+#                   3 - Otro (Configurar Coordenadas)
+#
+
+WGChecker.TeleportMode = 0
+
+WGChecker.TeleportModeX = 0.0
+WGChecker.TeleportModeY = 0.0
+WGChecker.TeleportModeZ = 0.0
+WGChecker.TeleportModeO = 0.0
+WGChecker.TeleportModeMap = 0
