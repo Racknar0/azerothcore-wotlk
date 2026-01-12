@@ -116,4 +116,5 @@ local.properties
 !modules/mod-transmog
 !modules/Recache
 !modules/wintergrasp_ip_and_afk_checker
+!modules/mod-item-upgrade
 /env/dist_test/*
