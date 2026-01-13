@@ -426,7 +426,7 @@ public:
                         me->GetThreatMgr().AddThreat(pTarget, 100.0f);
                         AttackStart(pTarget);
                     }
-                    events.Repeat(20s);
+                    events.Repeat(13s);
                     break;
                 case EVENT_CHECK_HEALTH:
                     if (me->HealthBelowPct(30))
