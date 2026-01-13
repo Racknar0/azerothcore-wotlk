@@ -130,7 +130,7 @@ public:
         {
             BossAI::JustEngagedWith(who);
             me->SetInCombatWithZone();
-            events.ScheduleEvent(EVENT_WEB_WRAP, 20s);
+            events.ScheduleEvent(EVENT_WEB_WRAP, 15s);
             events.ScheduleEvent(EVENT_WEB_SPRAY, 40s);
             events.ScheduleEvent(EVENT_POISON_SHOCK, 10s);
             events.ScheduleEvent(EVENT_NECROTIC_POISON, 5s);
@@ -228,7 +228,7 @@ public:
                 case EVENT_WEB_SPRAY:
                     Talk(EMOTE_WEB_SPRAY);
                     me->CastSpell(me, SPELL_WEB_SPRAY, true);
-                    events.Repeat(30s);
+                    events.Repeat(40s);
                     break;
                 case EVENT_POISON_SHOCK:
                     me->CastSpell(me->GetVictim(), SPELL_POISON_SHOCK, false);
@@ -257,7 +257,7 @@ public:
                 case EVENT_WEB_WRAP:
                     Talk(EMOTE_WEB_WRAP);
                     DoCastWebWrap();
-                    events.Repeat(40s);
+                    events.Repeat(15s);
                     break;
                 case EVENT_WEB_WRAP_APPLY_STUN:
                 {
