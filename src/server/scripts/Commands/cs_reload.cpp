@@ -42,6 +42,7 @@
 #include "WardenCheckMgr.h"
 #include "WaypointMgr.h"
 #include "WorldGlobals.h"
+#include "../../../modules/mod-spell-regulator/src/SpellRegulator.h"
 
 using namespace Acore::ChatCommands;
 
@@ -158,6 +159,7 @@ public:
             { "spell_pet_auras",               HandleReloadSpellPetAurasCommand,              SEC_ADMINISTRATOR, Console::Yes },
             { "spell_proc_event",              HandleReloadSpellProcEventCommand,             SEC_ADMINISTRATOR, Console::Yes },
             { "spell_proc",                    HandleReloadSpellProcsCommand,                 SEC_ADMINISTRATOR, Console::Yes },
+            { "spell_regulator",               HandleReloadSpellRegulator,                    SEC_ADMINISTRATOR, Console::Yes },
             { "spell_scripts",                 HandleReloadSpellScriptsCommand,               SEC_ADMINISTRATOR, Console::Yes },
             { "spell_target_position",         HandleReloadSpellTargetPositionCommand,        SEC_ADMINISTRATOR, Console::Yes },
             { "spell_threats",                 HandleReloadSpellThreatsCommand,               SEC_ADMINISTRATOR, Console::Yes },
@@ -216,6 +218,14 @@ public:
         HandleReloadMotdCommand(handler);
         HandleReloadBroadcastTextCommand(handler);
         HandleReloadBattlegroundTemplate(handler);
+        HandleReloadSpellRegulator(handler);
+        return true;
+    }
+
+    static bool HandleReloadSpellRegulator(ChatHandler* handler)
+    {
+        sSpellRegulator->LoadFromDB();
+        handler->SendGlobalGMSysMessage("DB table `spellregulator` reloaded.");
         return true;
     }
 
