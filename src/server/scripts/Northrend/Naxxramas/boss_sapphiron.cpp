@@ -259,7 +259,7 @@ public:
                     events.Repeat(10s);
                     return;
                 case EVENT_LIFE_DRAIN:
-                    me->CastCustomSpell(SPELL_LIFE_DRAIN, SPELLVALUE_MAX_TARGETS, RAID_MODE(2, 5), me, false);
+                    me->CastCustomSpell(SPELL_LIFE_DRAIN, SPELLVALUE_MAX_TARGETS, RAID_MODE(4, 12), me, false);
                     events.Repeat(24s);
                     return;
                 case EVENT_BLIZZARD:
@@ -277,7 +277,7 @@ public:
                         {
                             cr->GetMotionMaster()->MoveRandom(40);
                         }
-                        events.Repeat(RAID_MODE(8000ms, 6500ms));
+                        events.Repeat(RAID_MODE(4000ms, 3000ms));
                         return;
                     }
                 case EVENT_FLIGHT_START:
@@ -301,7 +301,7 @@ public:
                     me->SetDisableGravity(true);
                     currentTarget.Clear();
                     events.ScheduleEvent(EVENT_FLIGHT_ICEBOLT, 3s);
-                    iceboltCount = RAID_MODE(2, 3);
+                    iceboltCount = RAID_MODE(3, 6);
                     return;
                 case EVENT_FLIGHT_ICEBOLT:
                     {
