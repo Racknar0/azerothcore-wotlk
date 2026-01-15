@@ -133,7 +133,7 @@ public:
         void KilledUnit(Unit* who) override
         {
             if (me->IsAlive() && who->GetEntry() == NPC_ZOMBIE_CHOW)
-                me->ModifyHealth(int32(me->GetMaxHealth() * 0.05f));
+                me->ModifyHealth(int32(me->GetMaxHealth() * 0.15f));
 
             if (who->IsPlayer())
                 instance->StorePersistentData(PERSISTENT_DATA_IMMORTAL_FAIL, 1);
