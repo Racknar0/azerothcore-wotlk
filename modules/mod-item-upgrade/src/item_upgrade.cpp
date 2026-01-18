@@ -3181,9 +3181,9 @@ void ItemUpgrade::SendItemPacket(Player* player, Item* item) const
     queryData << pProto->InventoryType;
     queryData << pProto->AllowableClass;
     queryData << pProto->AllowableRace;
-    if (GetBoolConfig(CONFIG_ITEM_UPGRADE_SEND_PACKETS) && pProto->StatsCount > 0)
-        queryData << CalculateItemLevel(player, item).second;
-    else
+    // if (GetBoolConfig(CONFIG_ITEM_UPGRADE_SEND_PACKETS) && pProto->StatsCount > 0)
+    //     queryData << CalculateItemLevel(player, item).second;
+    // else
         queryData << pProto->ItemLevel;
     queryData << pProto->RequiredLevel;
     queryData << pProto->RequiredSkill;
