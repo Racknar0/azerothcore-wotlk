@@ -277,7 +277,7 @@ public:
                         {
                             cr->GetMotionMaster()->MoveRandom(40);
                         }
-                        events.Repeat(RAID_MODE(6000ms, 4500ms));
+                        events.Repeat(RAID_MODE(8000ms, 6500ms));
                         return;
                     }
                 case EVENT_FLIGHT_START:
@@ -301,7 +301,7 @@ public:
                     me->SetDisableGravity(true);
                     currentTarget.Clear();
                     events.ScheduleEvent(EVENT_FLIGHT_ICEBOLT, 3s);
-                    iceboltCount = RAID_MODE(2, 5);
+                    iceboltCount = RAID_MODE(2, 3);
                     return;
                 case EVENT_FLIGHT_ICEBOLT:
                     {

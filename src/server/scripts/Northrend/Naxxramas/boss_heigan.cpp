@@ -105,9 +105,9 @@ struct boss_heigan : public BossAI
             me->CastStop();
             me->SetReactState(REACT_AGGRESSIVE);
             DoZoneInCombat();
-            ScheduleTimedEvent(10s, 10s, [&] {
+            ScheduleTimedEvent(12s, 15s, [&] {
                 DoCastSelf(SPELL_SPELL_DISRUPTION);
-            }, 15s);
+            }, 10s);
             ScheduleTimedEvent(17s, [&] {
                 DoCastSelf(SPELL_DECREPIT_FEVER);
             }, 22s, 25s);

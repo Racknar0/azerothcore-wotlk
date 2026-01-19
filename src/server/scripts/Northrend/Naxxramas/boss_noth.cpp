@@ -205,9 +205,9 @@ public:
                 case EVENT_CURSE:
                     if (events.GetPhaseMask() == 0)
                     {
-                        me->CastCustomSpell(SPELL_CURSE_OF_THE_PLAGUEBRINGER, SPELLVALUE_MAX_TARGETS, RAID_MODE(8, 18), me, false);
+                        me->CastCustomSpell(SPELL_CURSE_OF_THE_PLAGUEBRINGER, SPELLVALUE_MAX_TARGETS, RAID_MODE(3, 10), me, false);
                     }
-                    events.Repeat(20s);
+                    events.Repeat(25s);
                     break;
                 case EVENT_SUMMON_PLAGUED_WARRIOR_ANNOUNCE:
                     Talk(SAY_SUMMON);

@@ -257,7 +257,7 @@ public:
                 case EVENT_WEB_WRAP:
                     Talk(EMOTE_WEB_WRAP);
                     DoCastWebWrap();
-                    events.Repeat(30s);
+                    events.Repeat(40s);
                     break;
                 case EVENT_WEB_WRAP_APPLY_STUN:
                 {
